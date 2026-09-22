@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ATM Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main class="atm">
+    <header class="atm-top">
+      <span class="brand">Northfield Bank</span>
+      <span class="atm-id">ATM 04</span>
+    </header>
+
+    <section class="screen">
+      <!-- One shared area for errors, success and info messages -->
+      <div id="message" class="message" role="status" aria-live="polite" hidden></div>
+
+      <!-- ============ LOGIN ============ -->
+      <section id="view-login" class="view">
+        <h1>Welcome</h1>
+        <p class="lede">Enter your account number, then your 4-digit PIN.</p>
+
+        <form id="login-form" autocomplete="off" novalidate>
+          <label for="login-account">Account number</label>
+          <input id="login-account" class="digits-only" inputmode="numeric" maxlength="6" placeholder="6 digits">
+
+          <label for="login-pin">PIN</label>
+          <input id="login-pin" class="pin-input digits-only" type="password" inputmode="numeric" maxlength="4" placeholder="••••">
+
+          <div class="keypad" role="group" aria-label="PIN keypad">
+            <button type="button" class="key" data-key="1">1</button>
+            <button type="button" class="key" data-key="2">2</button>
+            <button type="button" class="key" data-key="3">3</button>
+            <button type="button" class="key" data-key="4">4</button>
+            <button type="button" class="key" data-key="5">5</button>
+            <button type="button" class="key" data-key="6">6</button>
+            <button type="button" class="key" data-key="7">7</button>
+            <button type="button" class="key" data-key="8">8</button>
+            <button type="button" class="key" data-key="9">9</button>
+            <button type="button" class="key key-small" data-key="clear">Clear</button>
+            <button type="button" class="key" data-key="0">0</button>
+            <button type="button" class="key" data-key="back" aria-label="Delete last digit">⌫</button>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Enter</button>
+        </form>
+
+        <p class="hint">Demo accounts: 100001 with PIN 1234, or 100002 with PIN 4321.</p>
+        <div class="foot-links">
+          <button type="button" class="btn-link" data-goto="register">Open a new account</button>
+          <button type="button" class="btn-link" id="reset-demo">Reset demo data</button>
+        </div>
+      </section>
+
+      <!-- ============ REGISTER ============ -->
+      <section id="view-register" class="view" hidden>
+        <h1>Open a new account</h1>
+        <p class="lede">You will get a 6-digit account number to log in with.</p>
+
+        <form id="register-form" autocomplete="off" novalidate>
+          <label for="register-name">Full name</label>
+          <input id="register-name" type="text" maxlength="40">
+
+          <label for="register-pin">Choose a 4-digit PIN</label>
+          <input id="register-pin" class="pin-input digits-only" type="password" inputmode="numeric" maxlength="4">
+
+          <label for="register-pin2">Confirm PIN</label>
+          <input id="register-pin2" class="pin-input digits-only" type="password" inputmode="numeric" maxlength="4">
+
+          <label for="register-deposit">Opening deposit (optional)</label>
+          <input id="register-deposit" type="text" inputmode="decimal" placeholder="0.00">
+
+          <div class="row actions">
+            <button type="button" class="btn btn-secondary" data-goto="login">Cancel</button>
+            <button type="submit" class="btn btn-primary">Create account</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ MAIN MENU ============ -->
+      <section id="view-menu" class="view" hidden>
+        <h1>Choose a service</h1>
+        <p class="lede" id="menu-greeting"></p>
+
+        <div class="menu">
+          <button type="button" class="btn btn-tile" data-goto="balance">Check balance</button>
+          <button type="button" class="btn btn-tile" data-goto="deposit">Deposit money</button>
+          <button type="button" class="btn btn-tile" data-goto="withdraw">Withdraw money</button>
+          <button type="button" class="btn btn-tile" data-goto="history">Transaction history</button>
+          <button type="button" class="btn btn-tile" data-goto="pin">Change PIN</button>
+          <button type="button" class="btn btn-danger" id="logout-btn">Log out</button>
+        </div>
+      </section>
+
+      <!-- ============ BALANCE ============ -->
+      <section id="view-balance" class="view" hidden>
+        <h1>Your balance</h1>
+        <p class="lede" id="balance-account"></p>
+        <div class="balance" id="balance-amount"></div>
+        <button type="button" class="btn btn-secondary btn-block" data-goto="menu">Back to menu</button>
+      </section>
+
+      <!-- ============ DEPOSIT ============ -->
+      <section id="view-deposit" class="view" hidden>
+        <h1>Deposit money</h1>
+        <p class="lede">Enter the amount you are depositing.</p>
+
+        <form id="deposit-form" autocomplete="off" novalidate>
+          <label for="deposit-amount">Amount</label>
+          <input id="deposit-amount" class="amount-input" type="text" inputmode="decimal" placeholder="0.00">
+
+          <div class="chips" aria-label="Quick amounts">
+            <button type="button" class="chip" data-amount="20">20</button>
+            <button type="button" class="chip" data-amount="50">50</button>
+            <button type="button" class="chip" data-amount="100">100</button>
+            <button type="button" class="chip" data-amount="500">500</button>
+          </div>
+
+          <div class="row actions">
+            <button type="button" class="btn btn-secondary" data-goto="menu">Back to menu</button>
+            <button type="submit" class="btn btn-primary">Deposit</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ WITHDRAW ============ -->
+      <section id="view-withdraw" class="view" hidden>
+        <h1>Withdraw money</h1>
+        <p class="lede" id="withdraw-rules"></p>
+
+        <form id="withdraw-form" autocomplete="off" novalidate>
+          <label for="withdraw-amount">Amount</label>
+          <input id="withdraw-amount" class="amount-input" type="text" inputmode="decimal" placeholder="0.00">
+
+          <div class="chips" aria-label="Quick amounts">
+            <button type="button" class="chip" data-amount="20">20</button>
+            <button type="button" class="chip" data-amount="50">50</button>
+            <button type="button" class="chip" data-amount="100">100</button>
+            <button type="button" class="chip" data-amount="200">200</button>
+          </div>
+
+          <div class="row actions">
+            <button type="button" class="btn btn-secondary" data-goto="menu">Back to menu</button>
+            <button type="submit" class="btn btn-primary">Withdraw</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============ HISTORY ============ -->
+      <section id="view-history" class="view" hidden>
+        <h1>Transaction history</h1>
+
+        <div class="filters" role="group" aria-label="Filter by type">
+          <button type="button" class="filter" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" class="filter" data-filter="deposit" aria-pressed="false">Deposits</button>
+          <button type="button" class="filter" data-filter="withdrawal" aria-pressed="false">Withdrawals</button>
+        </div>
+
+        <label for="history-search" class="visually-hidden">Search transactions</label>
+        <input id="history-search" type="search" placeholder="Search by note or amount">
+
+        <div class="summary">
+          <span>Money in: <strong id="total-in"></strong></span>
+          <span>Money out: <strong id="total-out"></strong></span>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Details</th>
+                <th scope="col" class="num">Amount</th>
+                <th scope="col" class="num">Balance</th>
+              </tr>
+            </thead>
+            <tbody id="history-body"></tbody>
+          </table>
+          <p id="history-empty" class="empty" hidden>No transactions match. Try another filter or search.</p>
+        </div>
+
+        <button type="button" class="btn btn-secondary btn-block spaced" data-goto="menu">Back to menu</button>
+      </section>
+
+      <!-- ============ CHANGE PIN ============ -->
+      <section id="view-pin" class="view" hidden>
+        <h1>Change PIN</h1>
+        <p class="lede">Your new PIN must be 4 digits and different from the current one.</p>
+
+        <form id="pin-form" autocomplete="off" novalidate>
+          <label for="pin-current">Current PIN</label>
+          <input id="pin-current" class="pin-input digits-only" type="password" inputmode="numeric" maxlength="4">
+
+          <label for="pin-new">New PIN</label>
+          <input id="pin-new" class="pin-input digits-only" type="password" inputmode="numeric" maxlength="4">
+
+          <label for="pin-new2">Confirm new PIN</label>
+          <input id="pin-new2" class="pin-input digits-only" type="password" inputmode="numeric" maxlength="4">
+
+          <div class="row actions">
+            <button type="button" class="btn btn-secondary" data-goto="menu">Back to menu</button>
+            <button type="submit" class="btn btn-primary">Save new PIN</button>
+          </div>
+        </form>
+      </section>
+    </section>
+
+    <div class="card-slot" aria-hidden="true"></div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
